@@ -174,7 +174,8 @@ NOTES:
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+    int res = ~((~(~x&y))&(~(x&~y)));
+    return res;
 }
 /* 
  * byteSwap - swaps the nth byte and the mth byte
