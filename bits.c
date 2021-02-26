@@ -193,13 +193,14 @@ int byteSwap(int x, int n, int m) {
  * isLowerCaseLetter - return 1 if 0x61 <= x <= 0x7A (ASCII codes for characters 'a' to 'z')
  *   Example: isLowerCaseLetter(0x65) = 1.
  *            isLowerCaseLetter(0x60) = 0.
- *            isLowerCaseLetter(0x81) = 0.
+ *            isLowerCaseLetter(çok ) = 0.
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 15
  *   Rating: 3
  */
 int isLowerCaseLetter(int x) {
-  return 2;
+    int res = ~(x >> 7) & (x >> 6) & (x >> 5) & (x << 27);
+    return res;
 }
 /*
  * bitCount - returns count of number of 1's in word
