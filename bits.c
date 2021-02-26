@@ -199,7 +199,7 @@ int byteSwap(int x, int n, int m) {
  *   Rating: 3
  */
 int isLowerCaseLetter(int x) {
-    int res = ~(x >> 7) & (x >> 6) & (x >> 5) & (x << 27);
+    int res = (!(x >> 7) & ((x >> 6) & (x >> 5))) & !(((x & 31) + 5) >> 5) & !(!(x & 31));
     return res;
 }
 /*
