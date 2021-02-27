@@ -235,7 +235,9 @@ int divpwr4(int x, int n) {
  *   Rating: 3
  */
 int ezThreeFourths(int x) {
-  return 2;
+    int multipleOfThree = (x + (x << 1)) >> 2;	
+    int res = multipleOfThree + (!(~multipleOfThree >> 31) & ((x & 1) | ((x >> 1) & 1)));
+    return res;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
