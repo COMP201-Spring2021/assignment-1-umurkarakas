@@ -187,7 +187,12 @@ int bitXor(int x, int y) {
  *  Rating: 2
  */
 int byteSwap(int x, int n, int m) {
-    return 2;
+    int shift1 = n << 3;
+    int shift2 = m << 3;
+    int temp1 = ~((~(x >> shift1) & 0xff) << shift2);
+    int temp2 = ~((~(x >> shift2) & 0xff) << shift1);
+    int res = (x | (0xff << shift1) | (0xff << shift2)) & temp1 & temp2;
+    return res;
 }
 /* 
  * isLowerCaseLetter - return 1 if 0x61 <= x <= 0x7A (ASCII codes for characters 'a' to 'z')
