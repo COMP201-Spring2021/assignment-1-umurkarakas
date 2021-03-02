@@ -226,7 +226,8 @@ int bitCount(int x) {
  *   Rating: 2
  */
 int divpwr4(int x, int n) {
-    return 2;
+    int shiftedVal = ((x >> n) >> n);
+    return shiftedVal + ((!(~x >> 31)) & !(!n) & !(!(((1 << n << n) + ~0) & x)));
 }
 /*
  * ezThreeFourths - multiplies by 3/4 rounding toward 0,
