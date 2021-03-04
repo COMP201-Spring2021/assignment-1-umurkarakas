@@ -272,7 +272,12 @@ int howManyBits(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
- return 2;
+    unsigned negUf = uf ^ (1 << 31);
+    if (!(((negUf >> 23) & 0xff) ^ 0xff) && (negUf << 9)) {
+	return uf;
+    } else {
+        return negUf;
+    }
 }
 /* 
  * float_half - Return bit-level equivalent of expression 0.5*f for
