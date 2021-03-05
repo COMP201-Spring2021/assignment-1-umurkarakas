@@ -215,7 +215,10 @@ int isLowerCaseLetter(int x) {
  *   Rating: 4
  */
 int bitCount(int x) {
-  return 2;
+    int mask = 1 | (1 << 8) | (1 << 16) | (1 << 24);
+    int bitCountBytes = (mask & x) + (mask & (x >> 1)) + (mask & (x >> 2)) + (mask & (x >> 3)) + (mask & (x >> 4)) + (mask & (x >> 5)) + (mask & (x >> 6)) + (mask & (x >> 7));
+    int res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff);
+    return res;
 }
 /* 
  * divpwr4 - Compute x/(4^n), for 0 <= n <= 15
