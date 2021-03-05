@@ -294,5 +294,14 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_half(unsigned uf) {
-  return 2;
+    unsigned int fraction = (uf << 9) >> 9;
+    unsigned int sign = (uf >> 31) << 31;
+    unsigned int exponent = ((uf << 1) >> 24);
+    if ((!exponent) || !(exponent ^ 1)) {
+        return (sign | ((fraction + (1 & ((fraction & 2) >> 1 ))) >> 1)) | (exponent << 22);
+    } else if (!(exponent ^ 0xff)) {
+        return uf;
+    } else {
+        return sign | fraction | (~(~exponent + 1) << 23);
+    }  
 }
