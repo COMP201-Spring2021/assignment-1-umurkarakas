@@ -261,13 +261,15 @@ int ezThreeFourths(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-    unsigned int absVal = ((x >> 31) & (~x + 1)) | ((~x >> 31) & x);
-    int mask = (absVal | (absVal >> 1) | (absVal >> 2) | (absVal >> 3));
+    int absVal = ((x >> 31) & (~x + 1)) | ((~x >> 31) & x);
+    int mask = (absVal | ((absVal >> 1) & ~0));
+    int mask1, bitCountBytes, res;
+    mask = mask | (mask >> 2);
     mask = mask | (mask >> 4);
     mask = mask | (mask >> 8) | (mask >> 16) | (mask >> 24);
-    int mask1 = 1 | (1 << 8) | (1 << 16) | (1 << 24);
-    int bitCountBytes = (mask1 & mask) + (mask1 & (mask >> 1)) + (mask1 & (mask >> 2)) + (mask1 & (mask >> 3)) + (mask1 & (mask >> 4)) + (mask1 & (mask >> 5)) + (mask1 & (mask >> 6)) + (mask1 & (mask >> 7));
-    int res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff);
+    mask1 = 1 | (1 << 8) | (1 << 16) | (1 << 24);
+    bitCountBytes = (mask1 & mask) + (mask1 & (mask >> 1)) + (mask1 & (mask >> 2)) + (mask1 & (mask >> 3)) + (mask1 & (mask >> 4)) + (mask1 & (mask >> 5)) + (mask1 & (mask >> 6)) + (mask1 & (mask >> 7));
+    res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff);
     res = ~(~res + (1 & !(((1 << res) >> 1) ^ absVal) & (1 & (x >> 31))));    
     res = res + (1 & !(!(x ^ (1 << 31)))); 
     return res;
