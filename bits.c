@@ -187,10 +187,10 @@ int bitXor(int x, int y) {
  *  Rating: 2
  */
 int byteSwap(int x, int n, int m) {
-    int shift1 = n << 3;
-    int shift2 = m << 3;
-    int temp1 = ~((~(x >> shift1) & 0xff) << shift2);
-    int temp2 = ~((~(x >> shift2) & 0xff) << shift1);
+    int shift1 = n << 3;  // to get 8*n
+    int shift2 = m << 3;  // to get 8*m
+    int temp1 = ~((~(x >> shift1) & 0xff) << shift2); // shifting nth byte to mth byte's position, the rest bits are 1
+    int temp2 = ~((~(x >> shift2) & 0xff) << shift1); // shifting mth byte to nth byte's position, the rest bits are 1
     int res = (x | (0xff << shift1) | (0xff << shift2)) & temp1 & temp2;
     return res;
 }
@@ -204,6 +204,7 @@ int byteSwap(int x, int n, int m) {
  *   Rating: 3
  */
 int isLowerCaseLetter(int x) {
+    // checking whether x is between 0b01100001 and 0b01111010
     int res = (!(x >> 7) & ((x >> 6) & (x >> 5))) & !(((x & 31) + 5) >> 5) & !(!(x & 31));
     return res;
 }
@@ -215,8 +216,8 @@ int isLowerCaseLetter(int x) {
  *   Rating: 4
  */
 int bitCount(int x) {
-    int mask = 1 | (1 << 8) | (1 << 16) | (1 << 24);
-    int bitCountBytes = (mask & x) + (mask & (x >> 1)) + (mask & (x >> 2)) + (mask & (x >> 3)) + (mask & (x >> 4)) + (mask & (x >> 5)) + (mask & (x >> 6)) + (mask & (x >> 7));
+    int mask = 1 | (1 << 8) | (1 << 16) | (1 << 24); // mask to calculate number of 1 bits in each byte
+    int bitCountBytes = (mask & x) + (mask & (x >> 1)) + (mask & (x >> 2)) + (mask & (x >> 3)) + (mask & (x >> 4)) + (mask & (x >> 5)) + (mask & (x >> 6)) + (mask & (x >> 7)); // number of 1 bits in each byte
     int res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff);
     return res;
 }
@@ -229,8 +230,8 @@ int bitCount(int x) {
  *   Rating: 2
  */
 int divpwr4(int x, int n) {
-    int shiftedVal = ((x >> n) >> n);
-    return shiftedVal + ((!(~x >> 31)) & !(!n) & !(!(((1 << n << n) + ~0) & x)));
+    int shiftedVal = ((x >> n) >> n); // division by 4^n
+    return shiftedVal + ((!(~x >> 31)) & !(!n) & !(!(((1 << n << n) + ~0) & x))); // checking extreme cases and adding 1 accordingly
 }
 /*
  * ezThreeFourths - multiplies by 3/4 rounding toward 0,
@@ -244,8 +245,8 @@ int divpwr4(int x, int n) {
  *   Rating: 3
  */
 int ezThreeFourths(int x) {
-    int multipleOfThreeForths = (x + (x << 1)) >> 2;	
-    int res = multipleOfThreeForths + (!(~multipleOfThreeForths >> 31) & ((x & 1) | ((x >> 1) & 1)));
+    int multipleOfThreeForths = (x + (x << 1)) >> 2; // 3*x/4 	
+    int res = multipleOfThreeForths + (!(~multipleOfThreeForths >> 31) & ((x & 1) | ((x >> 1) & 1))); // checking the extreme case if 3*x/4 has a remainder and 3*x/4 is negative or not
     return res;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
@@ -261,17 +262,17 @@ int ezThreeFourths(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-    int absVal = ((x >> 31) & (~x + 1)) | ((~x >> 31) & x);
-    int mask = (absVal | ((absVal >> 1) & ~0));
+    int absVal = ((x >> 31) & (~x + 1)) | ((~x >> 31) & x); // absolute value of X
+    int mask = (absVal | ((absVal >> 1) & ~0)); // to prevent any error caused by arithmetical right shift in negative ints
     int mask1, bitCountBytes, res;
     mask = mask | (mask >> 2);
     mask = mask | (mask >> 4);
-    mask = mask | (mask >> 8) | (mask >> 16) | (mask >> 24);
+    mask = mask | (mask >> 8) | (mask >> 16) | (mask >> 24); // mask is filled with 1's from the most significant 1-bit to the least significant bit
     mask1 = 1 | (1 << 8) | (1 << 16) | (1 << 24);
     bitCountBytes = (mask1 & mask) + (mask1 & (mask >> 1)) + (mask1 & (mask >> 2)) + (mask1 & (mask >> 3)) + (mask1 & (mask >> 4)) + (mask1 & (mask >> 5)) + (mask1 & (mask >> 6)) + (mask1 & (mask >> 7));
-    res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff);
+    res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff); // counting the 1 bits in mask
     res = ~(~res + (1 & !(((1 << res) >> 1) ^ absVal) & (1 & (x >> 31))));    
-    res = res + (1 & !(!(x ^ (1 << 31)))); 
+    res = res + (1 & !(!(x ^ (1 << 31)))); // checking the extreme cases
     return res;
 }
 /* 
@@ -286,9 +287,9 @@ int howManyBits(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
-    unsigned negUf = uf ^ (1 << 31);
+    unsigned negUf = uf ^ (1 << 31); // negative of uf
     if (!(((negUf >> 23) & 0xff) ^ 0xff) && (negUf << 9)) {
-	return uf;
+	return uf; // for NaN cases
     } else {
         return negUf;
     }
@@ -305,14 +306,14 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_half(unsigned uf) {
-    unsigned int fraction = (uf << 9) >> 9;
+    unsigned int fraction = (uf << 9) >> 9; 
     unsigned int sign = (uf >> 31) << 31;
     unsigned int exponent = ((uf << 1) >> 24);
-    if ((!exponent) || !(exponent ^ 1)) {
+    if ((!exponent) || !(exponent ^ 1)) { // for the cases where the exponent is minimum
         return (sign | ((fraction + (1 & ((fraction & 2) >> 1 ))) >> 1)) | (exponent << 22);
-    } else if (!(exponent ^ 0xff)) {
+    } else if (!(exponent ^ 0xff)) { // checking the NaN case
         return uf;
-    } else {
+    } else { // 1 is subtracted from exponent
         return sign | fraction | (~(~exponent + 1) << 23);
     }  
 }
