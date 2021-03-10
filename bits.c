@@ -187,6 +187,7 @@ int bitXor(int x, int y) {
  *  Rating: 2
  */
 int byteSwap(int x, int n, int m) {
+    /* creates a temp int which has nth byte in mth byte's location and another temp int which has mth byte in nth byte's location, other bits are 1. Then uses or operator for the resulting int */
     int shift1 = n << 3;  // to get 8*n
     int shift2 = m << 3;  // to get 8*m
     int temp1 = ~((~(x >> shift1) & 0xff) << shift2); // shifting nth byte to mth byte's position, the rest bits are 1
@@ -204,7 +205,7 @@ int byteSwap(int x, int n, int m) {
  *   Rating: 3
  */
 int isLowerCaseLetter(int x) {
-    // checking whether x is between 0b01100001 and 0b01111010
+    /* checks whether x is between 0b01100001 and 0b01111010 */
     int res = (!(x >> 7) & ((x >> 6) & (x >> 5))) & !(((x & 31) + 5) >> 5) & !(!(x & 31));
     return res;
 }
@@ -216,6 +217,7 @@ int isLowerCaseLetter(int x) {
  *   Rating: 4
  */
 int bitCount(int x) {
+    /* uses a mask to find the number of 1 bits in each byte and creates another mask then uses newly created mask to sum the number of 1 bits in each byte */ 
     int mask = 1 | (1 << 8) | (1 << 16) | (1 << 24); // mask to calculate number of 1 bits in each byte
     int bitCountBytes = (mask & x) + (mask & (x >> 1)) + (mask & (x >> 2)) + (mask & (x >> 3)) + (mask & (x >> 4)) + (mask & (x >> 5)) + (mask & (x >> 6)) + (mask & (x >> 7)); // number of 1 bits in each byte
     int res = (bitCountBytes & 0xff) + ((bitCountBytes >> 8) & 0xff) + ((bitCountBytes >> 16) & 0xff) + ((bitCountBytes >> 24) & 0xff);
@@ -230,6 +232,7 @@ int bitCount(int x) {
  *   Rating: 2
  */
 int divpwr4(int x, int n) {
+    /* shifts x to the right by 2n to divide by 4^n and then evaluates the extreme cases where there is either no shift or there is a remainder from dividing by 4^n */
     int shiftedVal = ((x >> n) >> n); // division by 4^n
     return shiftedVal + ((!(~x >> 31)) & !(!n) & !(!(((1 << n << n) + ~0) & x))); // checking extreme cases and adding 1 accordingly
 }
@@ -245,7 +248,8 @@ int divpwr4(int x, int n) {
  *   Rating: 3
  */
 int ezThreeFourths(int x) {
-    int multipleOfThreeForths = (x + (x << 1)) >> 2; // 3*x/4 	
+    /* creates an int for 3*x/4 and checks extreme cases where the number is negative and there is a remainder from dividing by 4 */ 
+    int multipleOfThreeForths = (x + (x << 1)) >> 2; // 3*x/4 
     int res = multipleOfThreeForths + (!(~multipleOfThreeForths >> 31) & ((x & 1) | ((x >> 1) & 1))); // checking the extreme case if 3*x/4 has a remainder and 3*x/4 is negative or not
     return res;
 }
@@ -262,6 +266,7 @@ int ezThreeFourths(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
+    /* equalizes all bits to 1 that comes after the most significant 1 bit, then counts the number of 1 bits and evaluates the extreme cases where x is negative and it has only one 1-bit */
     int absVal = ((x >> 31) & (~x + 1)) | ((~x >> 31) & x); // absolute value of X
     int mask = (absVal | ((absVal >> 1) & ~0)); // to prevent any error caused by arithmetical right shift in negative ints
     int mask1, bitCountBytes, res;
@@ -287,6 +292,7 @@ int howManyBits(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
+    /* returns the negative of uf if it doesn't correspond to NaN, if it's NaN returns uf */
     unsigned negUf = uf ^ (1 << 31); // negative of uf
     if (!(((negUf >> 23) & 0xff) ^ 0xff) && (negUf << 9)) {
 	return uf; // for NaN cases
@@ -306,6 +312,7 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_half(unsigned uf) {
+    /* returns uf if it's NaN, if exponent is 0x00 or 0x01, checks if it's 2nd least significant bit is 1, if so adds 1 to fraction shifts the entire floating point to the right by 1 except the sign bit, if there's no extreme case, it only subtracts 1 from exponent then returns the value */
     unsigned int fraction = (uf << 9) >> 9; 
     unsigned int sign = (uf >> 31) << 31;
     unsigned int exponent = ((uf << 1) >> 24);
